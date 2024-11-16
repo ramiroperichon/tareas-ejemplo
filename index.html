@@ -110,21 +110,18 @@
     </div>
 
     <script>
-        // Referencias al DOM
         const taskForm = document.getElementById('taskForm');
         const taskInput = document.getElementById('taskInput');
         const taskList = document.getElementById('taskList');
 
-        // Evento para agregar una nueva tarea
-        taskForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+        // Función para cargar tareas desde sessionStorage
+        function loadTasks() {
+            const tasks = JSON.parse(sessionStorage.getItem('tasks')) || [];
+            tasks.forEach(task => addTaskToDOM(task));
+        }
 
-            // Obtiene el texto de la nueva tarea
-            const taskText = taskInput.value.trim();
-
-            if (taskText === '') return;
-
-            // Crear un nuevo elemento de la lista
+        // Función para agregar tarea al DOM
+        function addTaskToDOM(taskText) {
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>${taskText}</span>
@@ -134,22 +131,47 @@
                 </div>
             `;
 
-            // Agrega el evento para marcar como completada
+            // Marcar tarea como completada
             li.querySelector('.btn-complete').addEventListener('click', function () {
                 li.querySelector('span').classList.toggle('completed');
             });
 
-            // Agrega el evento para eliminar la tarea
+            // Eliminar tarea
             li.querySelector('.btn-delete').addEventListener('click', function () {
                 li.remove();
+                removeTaskFromSession(taskText);
             });
 
-            // Agrega la nueva tarea a la lista
             taskList.appendChild(li);
+        }
 
-            // Limpia el campo de entrada
+        // Función para guardar tarea en sessionStorage
+        function saveTaskToSession(taskText) {
+            const tasks = JSON.parse(sessionStorage.getItem('tasks')) || [];
+            tasks.push(taskText);
+            sessionStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // Función para eliminar tarea de sessionStorage
+        function removeTaskFromSession(taskText) {
+            let tasks = JSON.parse(sessionStorage.getItem('tasks')) || [];
+            tasks = tasks.filter(task => task !== taskText);
+            sessionStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // Evento para agregar tarea
+        taskForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const taskText = taskInput.value.trim();
+            if (taskText === '') return;
+
+            addTaskToDOM(taskText);
+            saveTaskToSession(taskText);
             taskInput.value = '';
         });
+
+        // Cargar tareas al iniciar la página
+        loadTasks();
     </script>
 </body>
 </html>
