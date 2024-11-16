@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-complete {
+            background: #28a745;
+        }
+
+        .btn-complete:hover {
+            background: #1e7e34;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+        }
+
+        .btn-delete:hover {
+            background: #bd2130;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Tareas</h1>
+        <form id="taskForm">
+            <input type="text" id="taskInput" placeholder="Nueva tarea..." required>
+            <button type="submit">Agregar</button>
+        </form>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        // Referencias al DOM
+        const taskForm = document.getElementById('taskForm');
+        const taskInput = document.getElementById('taskInput');
+        const taskList = document.getElementById('taskList');
+
+        // Evento para agregar una nueva tarea
+        taskForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Obtiene el texto de la nueva tarea
+            const taskText = taskInput.value.trim();
+
+            if (taskText === '') return;
+
+            // Crear un nuevo elemento de la lista
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${taskText}</span>
+                <div class="actions">
+                    <button class="btn-complete">✔</button>
+                    <button class="btn-delete">✖</button>
+                </div>
+            `;
+
+            // Agrega el evento para marcar como completada
+            li.querySelector('.btn-complete').addEventListener('click', function () {
+                li.querySelector('span').classList.toggle('completed');
+            });
+
+            // Agrega el evento para eliminar la tarea
+            li.querySelector('.btn-delete').addEventListener('click', function () {
+                li.remove();
+            });
+
+            // Agrega la nueva tarea a la lista
+            taskList.appendChild(li);
+
+            // Limpia el campo de entrada
+            taskInput.value = '';
+        });
+    </script>
+</body>
+</html>
